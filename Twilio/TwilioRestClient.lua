@@ -47,7 +47,7 @@ end
 local function formatPhoneNumber(number)
     -- use '%2B' for +
     local s,e = string.find(number,"+")
-    if s then
+    if s and false then
         if s ~= 1 then return "" end --invalid number format
         return "%2B" .. number:sub(2)
     end
@@ -76,7 +76,7 @@ local function buildURI(vars)
         --Prevent tables or other unwanted types
         if Util.typechk(v,"string","number") and
            Util.typechk(k,"string","number") then
-            if k == "To" or k == "From" then v = formatPhoneNumber(v) end
+            --if k == "To" or k == "From" then v = formatPhoneNumber(v) end
             out = out .. (not first and "&" or "") .. tostring(k) .. "=" .. tostring(v)
         end
     end
