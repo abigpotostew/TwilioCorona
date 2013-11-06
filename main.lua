@@ -7,4 +7,4 @@ local Util = require "Twilio.Util"
 local url = "sip:stew@bracken.com"
 print (Util.url_encode(url))
 
-require "Twilio.tests.test_TwilioRestClient"
+require "tests.test_TwilioRestClient"

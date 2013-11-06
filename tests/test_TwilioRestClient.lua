@@ -2,7 +2,7 @@
 
 local Rest = require "Twilio.TwilioRestClient"
 --My own authentication credentials are not commited to repository. Get your own!
-local auth = require "Twilio.tests.auth" or {}
+local auth = require "tests.auth" or {}
 local json = require("json")
 
 --Plug in your twilio account credentials here in the XXXX's

@@ -1,6 +1,5 @@
 --TwilioRestClient.lua
 
-local base64 = require "Twilio.lib.Base64"
 local mime = require "mime"
 local json = require("json")
 local Util = require "Twilio.Util"
