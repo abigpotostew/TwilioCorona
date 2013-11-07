@@ -1,15 +1,39 @@
 --loginwindow.lua
+--Login window works but I haven't completed it, ignore this file.
 
 local widget = require( "widget" )
 local storyboard = require( "storyboard" )
 local scene = storyboard.newScene()
 
-local auth = require("tests.auth") or {}
+
+local TwilioRestClient = require "Twilio.TwilioRestClient"
+local auth = require "tests.auth" or {}
+--Plug in your twilio account credentials here in the XXXX's
+local ACCOUNT_SID = auth.ACCOUNT_SID or "XXXXXXXX" -- your Account SID
+local ACCOUNT_TOKEN = auth.ACCOUNT_TOKEN or "XXXXXX" --your account token
+  
+--Outgoing Caller phone number
+local CALLER_TO = auth.CALLER_TO or "+1NNNNNNNNNN"
+--Incoming Caller Phone Number, previously validated with Twilio
+local CALLER_FROM = auth.CALLER_FROM or "+1NNNNNNNNNN"
+
+--Lets just make our TwilioRestClient global because it's easier to use across scenes
+R = TwilioRestClient.create(ACCOUNT_SID, ACCOUNT_TOKEN)
+
+
 local Util = require("Twilio.Util")
 
 -- create a constant for the left spacing of the row content
 local LEFT_PADDING = 10
 local textMode = false
+
+function scene:exitScene(event)
+    --storyboard.purgeScene(self)
+end
+
+function scene:destroyScene(e)
+    storyboard.purgeScene("loginwindow")
+end
 
 
 function scene:createScene( event )
@@ -18,20 +42,9 @@ function scene:createScene( event )
 	-- Display a background
 	local background = display.newImage( "assets/background.png", true )
 	group:insert( background )
-	
-	-- Status text box
-	local statusBox = display.newRect( 70, 290, 210, 120 )
-	statusBox:setFillColor( 0, 0, 0 )
-	statusBox.alpha = 0.4
-	group:insert( statusBox )
-	
-	-- Status text
-	local statusText = display.newText( "Enter Twilio validated numbers to begin", 80, 300, 200, 0, native.systemFont, 20 )
-	statusText.x = statusBox.x
-	statusText.y = statusBox.y - ( statusBox.contentHeight * 0.5 ) + ( statusText.contentHeight * 0.5 )
-	group:insert( statusText )
-	
-	
+    
+    
+    
     
     local function fieldHandler( event )
         if ( "began" == event.phase ) then
@@ -63,58 +76,82 @@ function scene:createScene( event )
     local tWidth = 200
     local tTop = 80
     
-    local toTextField = native.newTextField(tLeft,tTop,tWidth, tHeight)
-    toTextField.inputType = "number"
-    toTextField.text = auth.CALLER_TO
-    toTextField:addEventListener("userInput",fieldHandler)
-    local toTextFieldLabel = display.newText( "To:", LEFT_PADDING, 80, native.systemFont, 16 )
-	toTextFieldLabel:setTextColor( 0 )
-	group:insert( toTextFieldLabel )
+    local sidTextField = native.newTextField(tLeft,tTop,tWidth, tHeight)
+    --toTextField.inputType = "number"
+    sidTextField.text = auth.ACCOUNT_SID
+    sidTextField:addEventListener("userInput",fieldHandler)
+    local toTextFieldLabel = display.newText( "SID:", LEFT_PADDING, 80, native.systemFont, 16 )
+	sidTextField:setTextColor( 0 )
+	group:insert( sidTextField )
     
-    local fromTextField = native.newTextField(tLeft,tTop+tHeight+10,tWidth, tHeight)
-    fromTextField.inputType = "number"
-    fromTextField.text = auth.CALLER_FROM
-    fromTextField:addEventListener("userInput",fieldHandler)
-    local fromTextFieldLabel = display.newText( "From:", LEFT_PADDING, tTop+tHeight+10, native.systemFont, 16 )
-	fromTextFieldLabel:setTextColor( 0 )
-	group:insert( fromTextFieldLabel )
+    local tokenTextField = native.newTextField(tLeft,tTop+tHeight+10,tWidth, tHeight)
+    --fromTextField.inputType = "number"
+    tokenTextField.text = auth.ACCOUNT_TOKEN
+    tokenTextField:addEventListener("userInput",fieldHandler)
+    local fromTextFieldLabel = display.newText( "Token:", LEFT_PADDING, tTop+tHeight+10, native.systemFont, 16 )
+	tokenTextField:setTextColor( 0 )
+	group:insert( tokenTextField )
     
+    
+    ---------------------------------------------------------------------------------------------
+	-- widget.newSpinner()
+	---------------------------------------------------------------------------------------------
+	
+	-- Create a spinner widget
+	local spinner = widget.newSpinner
+	{
+		left = 274,
+		top = 55,
+	}
+	group:insert( spinner )
+	
+	-- Start the spinner animating
+	--spinner:start()
+    spinner.isVisible = false
+    
+    
+    local function createTabBar()
+        
+        
+    end
     
 
-    local function makeCall( event )
+    local function authenticate( event )
         spinner:start()
-        statusText.text = "Requesting call..."
+        spinner.isVisible = true
+        --statusText.text = "Requesting call..."
         
         local function request_listener(e)
             spinner:stop()
             spinner.isVisible=false
             if e.success then
-                statusText.text = "Call success!"
-            else
-                status.text = e.message
+                --login
+                group.isVisible=false
+                createTabBar()
+                storyboard.gotoScene( "calltab" )
             end
-            print(Util.to_string(e.response))
         end
         
-        local vars = {To=toTextField.text, From = fromTextField.text, Url="http://demo.twilio.com/docs/voice.xml" }
-        R:request(vars, "POST", request_listener)
-        
+        --If twilio accepts get request, credentials are valid and we login
+        local vars = {}
+        R:request(vars, "GET", request_listener)
 	end
 	
-	local callButton = widget.newButton
+	local loginButton = widget.newButton
 	{
 	    left = tLeft,
 	    top = tTop+tHeight*2+10,
 		width = tWidth,
 		height = tHeight,
-		id = "callButton",
-	    label = "CALL",
-	    onRelease = makeCall,
+		id = "loginButton",
+	    label = "Login",
+	    onRelease = authenticate,
 	}
-	group:insert( callButton )
+	group:insert( loginButton )
 	
 end
 
 scene:addEventListener( "createScene" )
 
+scene:addEventListener( "destroyScene" )
 return scene

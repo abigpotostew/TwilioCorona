@@ -58,7 +58,7 @@ end
 
 -- override print() function to improve performance when running on device
 -- and print out file and line number for each print
-local original_print = print
+--[[local original_print = print
 if ( system.getInfo("environment") == "device" ) then
 	print("Print now going silent. With Love, Util.lua")
    print = function() end
@@ -77,7 +77,7 @@ else
         end
         original_print(debug_path,unpack(arg))
 	end
-end
+end]]--
 
 --Returns true if checkMe is one of the types passed in to arg
 -- Ex multiTypeCheck({1,2,3}, "string", "number") == false

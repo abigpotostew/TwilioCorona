@@ -11,6 +11,7 @@ local textMode = false
 
 local toTextField = nil
 local fromTextField = nil
+local bodyTextField = nil
 
 local tHeight = 30
 local tLeft = 80
@@ -55,6 +56,12 @@ local function createTextFields(self)
     fromTextField.text = CALLER_FROM
     fromTextField:addEventListener("userInput",fieldHandler)
     self.view:insert( fromTextField )
+    
+    bodyTextField = native.newTextField(tLeft,tTop+(tHeight+10)*2,tWidth, tHeight*2)
+    --bodyTextField.inputType = "number"
+    bodyTextField.text = "Your message goes here"
+    bodyTextField:addEventListener("userInput",fieldHandler)
+    self.view:insert( bodyTextField )
 end
 
 
@@ -69,8 +76,10 @@ end
 function scene:exitScene(e)
     fromTextField:removeSelf()
     toTextField:removeSelf()
+    bodyTextField:removeSelf()
     fromTextField=nil
     toTextField=nil
+    bodyTextField=nil
 end
 
 
@@ -126,38 +135,43 @@ function scene:createScene( event )
 	fromTextFieldLabel:setTextColor( 0 )
 	group:insert( fromTextFieldLabel )
     
+    local smsTextFieldLabel = display.newText( "Message:", LEFT_PADDING, tTop+(tHeight+10)*2, native.systemFont, 16 )
+	smsTextFieldLabel:setTextColor( 0 )
+	group:insert( smsTextFieldLabel )
+    
 
-    local function makeCall( event )
+    local function sendSMS( event )
         spinner:start()
         spinner.isVisible = true
-        statusText.text = "Requesting call..."
+        statusText.text = "Sending sms..."
         
         local function request_listener(e)
             spinner:stop()
             spinner.isVisible=false
             if e.success then
-                statusText.text = "Call success!"
+                statusText.text = "SMS success!"
             else
                 status.text = e.message
             end
             print(Util.to_string(e.response))
         end
         
-        local vars = {Type="Calls", To=toTextField.text, From = fromTextField.text, Url="http://demo.twilio.com/docs/voice.xml" }
-        R:request(vars, "POST", request_listener)
+        --Send a message
+        local vars = {Type="Messages", From=fromTextField.text, To = toTextField.text, Body=bodyTextField.text}
+        R:request(vars,"POST", request_listener)
 	end
 	
-	local callButton = widget.newButton
+	local sendButton = widget.newButton
 	{
 	    left = tLeft,
-	    top = tTop+tHeight*2+10,
+	    top = tTop+(tHeight+10)*4,
 		width = tWidth,
 		height = tHeight,
-		id = "callButton",
-	    label = "CALL",
-	    onRelease = makeCall,
+		id = "sendButton",
+	    label = "Send SMS",
+	    onRelease = sendSMS,
 	}
-	group:insert( callButton )
+	group:insert( sendButton )
 	
 end
 
