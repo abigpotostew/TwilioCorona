@@ -1,9 +1,15 @@
---util.lua
+-------------------------------------------------------------------------------
+-- Util.lua
+-- by Stewart Bracken  http://stewart.bracken.bz  stew.bracken@gmail.com
+-- Helper functions required for TwilioRestClient.
+-------------------------------------------------------------------------------
 
 local Util = setmetatable({}, nil)
 
+--Set to false for less assert checks and better performance
 local doTypeCheck = true
 
+--DeepCopy is the only function in this file necessary for TwilioRestClient.
 function Util.DeepCopy(object)
     if type(object) ~= "table" then
         return object

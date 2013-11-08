@@ -1,4 +1,11 @@
---calltab.lua
+-------------------------------------------------------------------------------
+-- calltab.lua 
+-- by Stewart Bracken  http://stewart.bracken.bz  stew.bracken@gmail.com
+-- Call any number with your twilio phone number
+-- Lots of code leveraged from WidgetDemo.
+-- Known critical bug: text labels and buttons are recreated on every scene
+-- enter but never destroyed, adding up a lot of widgets and whatnot.
+-------------------------------------------------------------------------------
 
 local widget = require( "widget" )
 local storyboard = require( "storyboard" )
@@ -110,9 +117,6 @@ function scene:createScene( event )
 		top = 55,
 	}
 	group:insert( spinner )
-	
-	-- Start the spinner animating
-	--spinner:start()
     spinner.isVisible = false
     
     createTextFields(self)
@@ -120,12 +124,10 @@ function scene:createScene( event )
     local toTextFieldLabel = display.newText( "To:", LEFT_PADDING, 80, native.systemFont, 16 )
 	toTextFieldLabel:setTextColor( 0 )
 	group:insert( toTextFieldLabel )
-    
 
     local fromTextFieldLabel = display.newText( "From:", LEFT_PADDING, tTop+tHeight+10, native.systemFont, 16 )
 	fromTextFieldLabel:setTextColor( 0 )
 	group:insert( fromTextFieldLabel )
-    
 
     local function makeCall( event )
         spinner:start()

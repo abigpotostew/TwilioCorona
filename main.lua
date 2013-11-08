@@ -1,14 +1,18 @@
---main.lua
+-------------------------------------------------------------------------------
+-- main.lua
+-- by Stewart Bracken  http://stewart.bracken.bz  stew.bracken@gmail.com
+-- Sample Corona app that uses TwilioRestClient
+-- Please ignore bugs as this app was not intended to be published.
+-------------------------------------------------------------------------------
 
-require("mobdebug").start()
-
-
+local mob = require("mobdebug")
+if mob then mob.start() end
 
 --require "tests.test_TwilioRestClient"
 
-
 local TwilioRestClient = require "Twilio.TwilioRestClient"
 local auth = require "tests.auth" or {}
+
 --Plug in your twilio account credentials here in the XXXX's
 ACCOUNT_SID = auth.ACCOUNT_SID or "XXXXXXXX" -- your Account SID
 ACCOUNT_TOKEN = auth.ACCOUNT_TOKEN or "XXXXXX" --your account token
@@ -22,7 +26,7 @@ CALLER_FROM = auth.CALLER_FROM or "+1NNNNNNNNNN"
 R = TwilioRestClient.create(ACCOUNT_SID, ACCOUNT_TOKEN)
 
 
-
+--Build example GUI
 -- Hide the status bar
 display.setStatusBar( display.HiddenStatusBar )
 
@@ -53,6 +57,7 @@ titleBarText.y = titleBar.y
 -- Start at calltab
 storyboard.gotoScene( "calltab" )
 
+local sceneTransitionOptions = { effect='slideLeft', time="300", }
 local tabButtons = 
 {
     {
@@ -61,7 +66,7 @@ local tabButtons =
         defaultFile = "assets/tabIcon.png",
         overFile = "assets/tabIcon-down.png",
         label = "Make a call!",
-        onPress = function() storyboard.gotoScene( "calltab" ); end,
+        onPress = function() storyboard.gotoScene( "calltab",sceneTransitionOptions ); end,
         selected = true
     },
     {
@@ -70,7 +75,7 @@ local tabButtons =
         defaultFile = "assets/tabIcon.png",
         overFile = "assets/tabIcon-down.png",
         label = "Send SMS",
-        onPress = function() storyboard.gotoScene( "sendsms" ); end,
+        onPress = function() storyboard.gotoScene( "sendsms",sceneTransitionOptions ); end,
     },
     {
         width = 32, 
@@ -78,7 +83,7 @@ local tabButtons =
         defaultFile = "assets/tabIcon.png",
         overFile = "assets/tabIcon-down.png",
         label = "Call logs",
-        onPress = function() storyboard.gotoScene( "calllog" ); end,
+        onPress = function() storyboard.gotoScene( "calllog",sceneTransitionOptions ); end,
     }
 }
 

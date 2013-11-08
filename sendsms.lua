@@ -1,4 +1,11 @@
---calltab.lua
+-------------------------------------------------------------------------------
+-- sendsms.lua 
+-- by Stewart Bracken  http://stewart.bracken.bz  stew.bracken@gmail.com
+-- Send text message with rest api.
+-- Lots of code leveraged from WidgetDemo.
+-- Known critical bug: text labels and buttons are recreated on every scene
+-- enter but never destroyed, adding up a lot of widgets and whatnot.
+-------------------------------------------------------------------------------
 
 local widget = require( "widget" )
 local storyboard = require( "storyboard" )
