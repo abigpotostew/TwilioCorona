@@ -16,13 +16,13 @@ settings =
 	{
 		plist =
 		{
-			CFBundleIconFile = "Icon.png",
+			CFBundleIconFile = "icns/Icon.png",
 			CFBundleIconFiles =
 			{
-				"Icon.png", 
-				"Icon@2x.png", 
-				"Icon-72.png", 
-				"Icon-72@2x.png", 
+				"icns/Icon.png", 
+				"icns/Icon@2x.png", 
+				"icns/Icon-72.png", 
+				"icns/Icon-72@2x.png", 
 			},
 		},
 	},

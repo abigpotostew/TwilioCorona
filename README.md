@@ -5,6 +5,8 @@ README for TwilioCorona
 
 This is a demo Corona app that features my Twilio Rest API class for Corona SDK (http://www.coronalabs.com)
 
-Open the root folder up with Corona Simulator to view the app.
+TwilioRestClient source is in TwilioCoronaApp/Twilio
+
+Open the TwilioCoronaApp folder up with Corona Simulator to view the app.
 
 At this point, TwilioRestClient only supports Rest HTTP requests. TwiML is not yet finished and probbaly won't ever be.
